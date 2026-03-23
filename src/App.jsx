@@ -59,9 +59,9 @@ export default function App() {
     const timer = setInterval(() =>
       setLoadingStep(p => p < LOADING_STEPS.length - 1 ? p + 1 : p), 2800)
 
-    const prompt = `당신은 한국 드라이브 코스 전문가입니다. 자동차 동아리 회원들을 위한 드라이브 코스를 추천해주세요.
+    const systemMessage = `당신은 한국 드라이브 코스 전문가입니다. 자동차 동아리 회원들을 위한 드라이브 코스를 추천해주세요.`
 
-조건:
+    const userMessage = `조건:
 - 출발지: ${departure}
 - 인원: ${people}
 - 소요 시간: ${duration}
@@ -92,7 +92,7 @@ ${season ? `- 계절/시간대: ${season}` : ''}
       const res = await fetch('/api/course', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ systemMessage, userMessage }),
       })
       const data = await res.json()
       if (!res.ok || data.error) throw new Error(data.error || '추천 실패')

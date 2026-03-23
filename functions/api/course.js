@@ -22,26 +22,37 @@ export async function onRequestPost(context) {
     return json({ error: '요청 형식이 올바르지 않습니다.' }, 400);
   }
 
-  const { prompt } = body;
-  if (!prompt) return json({ error: 'prompt가 필요합니다.' }, 400);
+  const { systemMessage, userMessage } = body;
+  if (!userMessage) return json({ error: 'userMessage가 필요합니다.' }, 400);
 
   try {
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    const res = await fetch('https://api.openai.com/v1/responses', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [{ role: 'user', content: prompt }],
+        model: 'gpt-4.1',
+        input: [
+          {
+            role: 'system',
+            content: [{ type: 'input_text', text: systemMessage }],
+          },
+          {
+            role: 'user',
+            content: [{ type: 'input_text', text: userMessage }],
+          },
+        ],
+        temperature: 1,
+        max_output_tokens: 2048,
       }),
     });
 
     const data = await res.json();
     if (!res.ok) throw new Error(data.error?.message || res.statusText);
 
-    return json({ text: data.choices?.[0]?.message?.content || '' });
+    return json({ text: data.output?.[0]?.content?.[0]?.text || '' });
   } catch (err) {
     return json({ error: err.message }, 500);
   }
