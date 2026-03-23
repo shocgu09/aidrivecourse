@@ -45,6 +45,7 @@ export default function App() {
   const [vibes, setVibes] = useState([])
   const [duration, setDuration] = useState('반나절(3~4시간)')
   const [season, setSeason] = useState('')
+  const [timeOfDay, setTimeOfDay] = useState('')
   const [result, setResult] = useState(null)
   const [error, setError] = useState(null)
   const [loadingStep, setLoadingStep] = useState(0)
@@ -66,7 +67,8 @@ export default function App() {
 - 인원: ${people}
 - 소요 시간: ${duration}
 - 선호 분위기: ${vibes.length > 0 ? vibes.join(', ') : '특별한 선호 없음'}
-${season ? `- 계절/시간대: ${season}` : ''}
+${season ? `- 계절: ${season}` : ''}
+${timeOfDay ? `- 시간대: ${timeOfDay}` : ''}
 
 다음 형식으로 답변해주세요:
 
@@ -106,7 +108,7 @@ ${season ? `- 계절/시간대: ${season}` : ''}
     }
   }
 
-  const reset = () => { setStep('input'); setResult(null); setError(null); setDeparture(''); setVibes([]) }
+  const reset = () => { setStep('input'); setResult(null); setError(null); setDeparture(''); setVibes([]); setSeason(''); setTimeOfDay('') }
 
   /* ── INPUT ── */
   if (step === 'input') return (
@@ -174,17 +176,25 @@ ${season ? `- 계절/시간대: ${season}` : ''}
           </div>
         </div>
 
-        <div className="form-group">
-          <label className="form-label">계절 / 시간대 <span className="form-hint">(선택)</span></label>
-          <select className="form-select" value={season} onChange={e => setSeason(e.target.value)}>
-            <option value="">상관없음</option>
-            <option>🌸 봄</option>
-            <option>☀️ 여름</option>
-            <option>🍁 가을</option>
-            <option>❄️ 겨울</option>
-            <option>🌤 주간</option>
-            <option>🌙 야간</option>
-          </select>
+        <div className="form-row">
+          <div className="form-group">
+            <label className="form-label">계절 <span className="form-hint">(선택)</span></label>
+            <select className="form-select" value={season} onChange={e => setSeason(e.target.value)}>
+              <option value="">상관없음</option>
+              <option>🌸 봄</option>
+              <option>☀️ 여름</option>
+              <option>🍁 가을</option>
+              <option>❄️ 겨울</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label className="form-label">시간대 <span className="form-hint">(선택)</span></label>
+            <select className="form-select" value={timeOfDay} onChange={e => setTimeOfDay(e.target.value)}>
+              <option value="">상관없음</option>
+              <option>🌤 주간</option>
+              <option>🌙 야간</option>
+            </select>
+          </div>
         </div>
 
         <button
