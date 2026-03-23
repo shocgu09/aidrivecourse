@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "pages:dev": "wrangler pages dev --compatibility-date=2024-09-23 -- vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
