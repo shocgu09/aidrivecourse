@@ -116,14 +116,14 @@ ${timeOfDay ? `- 시간대: ${timeOfDay}` : ''}
     const titleSec = sections.find(s => s.title.includes('🗺'))
     const courseName = titleSec ? titleSec.title.replace(/🗺\s*/, '') : 'AI 드라이브 코스'
     const summary = titleSec?.summary || ''
-    const shareText = `${courseName}\n${summary}\n\n📍 출발: ${departure} · 👥 ${people} · ⏱ ${duration}`
+    const shareText = `🗺 ${courseName}\n${summary}\n\n📍 출발: ${departure} · 👥 ${people} · ⏱ ${duration}\n\n${window.location.href}`
 
     if (navigator.share) {
       try {
-        await navigator.share({ title: courseName, text: shareText, url: window.location.href })
+        await navigator.share({ text: shareText })
       } catch (e) { /* 사용자가 취소한 경우 */ }
     } else {
-      await navigator.clipboard.writeText(`${shareText}\n\n${window.location.href}`)
+      await navigator.clipboard.writeText(shareText)
       setShareMsg('링크가 복사되었습니다!')
       setTimeout(() => setShareMsg(''), 2500)
     }
