@@ -110,6 +110,25 @@ ${timeOfDay ? `- 시간대: ${timeOfDay}` : ''}
 
   const reset = () => { setStep('input'); setResult(null); setError(null); setDeparture(''); setVibes([]); setSeason(''); setTimeOfDay('') }
 
+  const [shareMsg, setShareMsg] = useState('')
+  const handleShare = async () => {
+    const sections = parseResult(result || '')
+    const titleSec = sections.find(s => s.title.includes('🗺'))
+    const courseName = titleSec ? titleSec.title.replace(/🗺\s*/, '') : 'AI 드라이브 코스'
+    const summary = titleSec?.summary || ''
+    const shareText = `${courseName}\n${summary}\n\n📍 출발: ${departure} · 👥 ${people} · ⏱ ${duration}`
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: courseName, text: shareText, url: window.location.href })
+      } catch (e) { /* 사용자가 취소한 경우 */ }
+    } else {
+      await navigator.clipboard.writeText(`${shareText}\n\n${window.location.href}`)
+      setShareMsg('링크가 복사되었습니다!')
+      setTimeout(() => setShareMsg(''), 2500)
+    }
+  }
+
   /* ── INPUT ── */
   if (step === 'input') return (
     <div className="app">
@@ -266,9 +285,15 @@ ${timeOfDay ? `- 시간대: ${timeOfDay}` : ''}
         ))}
       </section>
 
-      <button className="btn-primary retry-btn" onClick={reset}>
-        🔄 다른 코스 추천받기
-      </button>
+      <div className="result-actions">
+        <button className="btn-primary retry-btn" onClick={reset}>
+          🔄 다른 코스 추천받기
+        </button>
+        <button className="btn-share" onClick={handleShare}>
+          🔗 공유하기
+        </button>
+      </div>
+      {shareMsg && <p className="share-msg">{shareMsg}</p>}
     </div>
   )
 }
