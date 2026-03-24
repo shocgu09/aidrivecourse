@@ -125,12 +125,13 @@ ${timeOfDay ? `- 시간대: ${timeOfDay}` : ''}
         useCORS: true,
       })
       canvas.toBlob(async (blob) => {
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
         const file = new File([blob], 'drive-course.png', { type: 'image/png' })
-        if (navigator.canShare?.({ files: [file] })) {
-          // 이미지 파일 직접 공유 (모바일)
+        if (isMobile && navigator.canShare?.({ files: [file] })) {
+          // 모바일: 공유 시트
           await navigator.share({ files: [file] })
         } else {
-          // 다운로드로 폴백 (데스크톱)
+          // 데스크톱: PNG 바로 다운로드
           const url = URL.createObjectURL(blob)
           const a = document.createElement('a')
           a.href = url; a.download = 'drive-course.png'; a.click()
