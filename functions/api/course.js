@@ -26,7 +26,7 @@ export async function onRequestPost(context) {
   if (!userMessage) return json({ error: 'userMessage가 필요합니다.' }, 400);
 
   try {
-    const res = await fetch('https://api.openai.com/v1/responses', {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -34,25 +34,19 @@ export async function onRequestPost(context) {
       },
       body: JSON.stringify({
         model: 'gpt-4.1',
-        input: [
-          {
-            role: 'system',
-            content: [{ type: 'input_text', text: systemMessage }],
-          },
-          {
-            role: 'user',
-            content: [{ type: 'input_text', text: userMessage }],
-          },
+        messages: [
+          { role: 'system', content: systemMessage },
+          { role: 'user', content: userMessage },
         ],
         temperature: 1,
-        max_output_tokens: 2048,
+        max_tokens: 2048,
       }),
     });
 
     const data = await res.json();
     if (!res.ok) throw new Error(data.error?.message || res.statusText);
 
-    return json({ text: data.output?.[0]?.content?.[0]?.text || '' });
+    return json({ text: data.choices?.[0]?.message?.content || '' });
   } catch (err) {
     return json({ error: err.message }, 500);
   }
