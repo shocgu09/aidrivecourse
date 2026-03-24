@@ -110,6 +110,7 @@ body { background: var(--bg); color: var(--text);
 .result-card-body { font-size: .88rem; color: var(--text2); line-height: 1.8; white-space: pre-line; }
 .result-card-list { padding-left: 16px; display: flex; flex-direction: column; gap: 6px; }
 .result-card-list li { font-size: .88rem; color: var(--text2); line-height: 1.7; }
+.result-capture { background: var(--bg); padding-bottom: 8px; }
 .result-actions { display: flex; gap: 12px; margin-top: 4px; }
 .result-actions .btn-primary { flex: 1; }
 .btn-share {

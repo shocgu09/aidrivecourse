@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import html2canvas from 'html2canvas'
 import './App.css'
 
 const VIBES = [
@@ -110,22 +111,39 @@ ${timeOfDay ? `- 시간대: ${timeOfDay}` : ''}
 
   const reset = () => { setStep('input'); setResult(null); setError(null); setDeparture(''); setVibes([]); setSeason(''); setTimeOfDay('') }
 
+  const resultRef = useRef(null)
   const [shareMsg, setShareMsg] = useState('')
-  const handleShare = async () => {
-    const sections = parseResult(result || '')
-    const titleSec = sections.find(s => s.title.includes('🗺'))
-    const courseName = titleSec ? titleSec.title.replace(/🗺\s*/, '') : 'AI 드라이브 코스'
-    const summary = titleSec?.summary || ''
-    const shareText = `🗺 ${courseName}\n${summary}\n\n📍 출발: ${departure} · 👥 ${people} · ⏱ ${duration}\n\n${window.location.href}`
+  const [sharing, setSharing] = useState(false)
 
-    if (navigator.share) {
-      try {
-        await navigator.share({ text: shareText })
-      } catch (e) { /* 사용자가 취소한 경우 */ }
-    } else {
-      await navigator.clipboard.writeText(shareText)
-      setShareMsg('링크가 복사되었습니다!')
+  const handleShare = async () => {
+    if (!resultRef.current || sharing) return
+    setSharing(true)
+    try {
+      const canvas = await html2canvas(resultRef.current, {
+        backgroundColor: '#0a0a0f',
+        scale: 2,
+        useCORS: true,
+      })
+      canvas.toBlob(async (blob) => {
+        const file = new File([blob], 'drive-course.png', { type: 'image/png' })
+        if (navigator.canShare?.({ files: [file] })) {
+          // 이미지 파일 직접 공유 (모바일)
+          await navigator.share({ files: [file] })
+        } else {
+          // 다운로드로 폴백 (데스크톱)
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url; a.download = 'drive-course.png'; a.click()
+          URL.revokeObjectURL(url)
+          setShareMsg('이미지가 저장되었습니다!')
+          setTimeout(() => setShareMsg(''), 2500)
+        }
+      }, 'image/png')
+    } catch (e) {
+      setShareMsg('공유 중 오류가 발생했습니다.')
       setTimeout(() => setShareMsg(''), 2500)
+    } finally {
+      setSharing(false)
     }
   }
 
@@ -257,6 +275,7 @@ ${timeOfDay ? `- 시간대: ${timeOfDay}` : ''}
         <button className="reset-btn" onClick={reset}>← 다시 추천</button>
       </header>
 
+      <div ref={resultRef} className="result-capture">
       {titleSec && (
         <section className="course-title-section">
           <div className="course-badge">AI 추천 코스</div>
@@ -284,13 +303,14 @@ ${timeOfDay ? `- 시간대: ${timeOfDay}` : ''}
           </div>
         ))}
       </section>
+      </div>
 
       <div className="result-actions">
         <button className="btn-primary retry-btn" onClick={reset}>
           🔄 다른 코스 추천받기
         </button>
-        <button className="btn-share" onClick={handleShare}>
-          🔗 공유하기
+        <button className="btn-share" onClick={handleShare} disabled={sharing}>
+          {sharing ? '⏳ 처리 중...' : '🖼 이미지 공유'}
         </button>
       </div>
       {shareMsg && <p className="share-msg">{shareMsg}</p>}
