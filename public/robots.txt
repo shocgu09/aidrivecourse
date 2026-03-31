@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://dt-1js.pages.dev/sitemap.xml
+Sitemap: https://aidrivecourse.pages.dev/sitemap.xml
