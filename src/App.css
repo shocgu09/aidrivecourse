@@ -5,8 +5,8 @@
   --bg2:      #13131a;
   --bg3:      #1c1c26;
   --border:   #2a2a38;
-  --primary:  #7c6ff7;
-  --primary-l:#a99ff9;
+  --primary:  #d97706;
+  --primary-l:#f59e0b;
   --green:    #4ade80;
   --text:     #e2e2ee;
   --text2:    #8888a8;
@@ -15,7 +15,7 @@
 }
 
 body { background: var(--bg); color: var(--text);
-  font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif; min-height: 100vh; }
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; min-height: 100vh; }
 #root { width: 100%; }
 
 .app { max-width: 720px; margin: 0 auto; padding: 0 24px 80px; }
@@ -23,7 +23,7 @@ body { background: var(--bg); color: var(--text);
 /* ── 헤더 ── */
 .header { display: flex; align-items: center; gap: 10px;
   padding: 28px 0 0; margin-bottom: 48px; }
-.logo { font-size: 1.4rem; font-weight: 800; color: var(--primary-l); letter-spacing: -.5px; flex: 1; }
+.logo { font-size: 1.4rem; font-weight: 800; color: var(--primary-l); letter-spacing: -.5px; flex: 1; font-family: 'Space Grotesk', sans-serif; }
 .logo-sub { font-size: .8rem; color: var(--text3); margin-top: 2px; }
 .reset-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text2);
   padding: 8px 16px; border-radius: 8px; font-size: .85rem; cursor: pointer; transition: all .2s; }
@@ -31,9 +31,9 @@ body { background: var(--bg); color: var(--text);
 
 /* ── 히어로 ── */
 .hero { text-align: center; margin-bottom: 48px; }
-.badge { display: inline-block; background: rgba(124,111,247,.18); color: var(--primary-l);
+.badge { display: inline-block; background: rgba(217,119,6,.18); color: var(--primary-l);
   font-size: .78rem; font-weight: 600; padding: 5px 14px; border-radius: 20px;
-  border: 1px solid rgba(124,111,247,.35); margin-bottom: 20px; }
+  border: 1px solid rgba(217,119,6,.35); margin-bottom: 20px; }
 .hero h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 16px;
   color: var(--text); letter-spacing: -.5px; }
 .accent { color: var(--primary-l); }
@@ -63,14 +63,14 @@ body { background: var(--bg); color: var(--text);
   transition: all .15s;
 }
 .vibe-chip:hover { border-color: var(--primary-l); color: var(--text); }
-.vibe-chip.selected { border-color: var(--primary-l); background: rgba(124,111,247,.15); color: var(--primary-l); font-weight: 600; }
+.vibe-chip.selected { border-color: var(--primary-l); background: rgba(217,119,6,.15); color: var(--primary-l); font-weight: 600; }
 
 /* ── 버튼 ── */
 .btn-primary { width: 100%; padding: 15px 20px; border-radius: 12px;
   font-size: .95rem; font-weight: 700; cursor: pointer; border: none;
   background: var(--primary); color: #fff; transition: all .2s; margin-top: 4px; }
 .btn-primary:hover:not(.disabled) { background: var(--primary-l); transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(124,111,247,.4); }
+  box-shadow: 0 8px 24px rgba(217,119,6,.4); }
 .btn-primary.disabled { background: var(--bg3); color: var(--text3); cursor: not-allowed; }
 
 /* ── 로딩 ── */
@@ -85,7 +85,7 @@ body { background: var(--bg); color: var(--text);
   border-radius: 10px; background: var(--bg2); border: 1px solid var(--border);
   opacity: .35; transition: all .4s; font-size: .88rem; color: var(--text2); }
 .loading-step.active { opacity: 1; border-color: var(--primary); color: var(--text);
-  background: rgba(124,111,247,.08); }
+  background: rgba(217,119,6,.08); }
 .loading-step.done { opacity: .7; }
 .step-icon { font-size: 1.1rem; width: 22px; text-align: center; }
 .loading-hint { font-size: .8rem; color: var(--text3); }
@@ -118,7 +118,7 @@ body { background: var(--bg); color: var(--text);
   background: var(--bg3); color: var(--primary-l);
   border: 1px solid var(--primary); cursor: pointer; transition: all .2s;
 }
-.btn-share:hover { background: rgba(124,111,247,.15); }
+.btn-share:hover { background: rgba(217,119,6,.15); }
 .share-msg { text-align: center; color: var(--green); font-size: .88rem; margin-top: 10px; }
 
 /* ── 반응형 ── */
