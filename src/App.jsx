@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react'
 import html2canvas from 'html2canvas'
 import './App.css'
+import { useAuthUser, authHeader, logout } from './auth.js'
+import LoginGate from './LoginGate.jsx'
 
 const VIBES = [
   { value: '야경', label: '🌃 야경' },
@@ -40,6 +42,7 @@ function parseResult(text) {
 }
 
 export default function App() {
+  const user = useAuthUser()
   const [step, setStep] = useState('input')
   const [departure, setDeparture] = useState('')
   const [people, setPeople] = useState('4~6명')
@@ -61,41 +64,12 @@ export default function App() {
     const timer = setInterval(() =>
       setLoadingStep(p => p < LOADING_STEPS.length - 1 ? p + 1 : p), 2800)
 
-    const systemMessage = `당신은 한국 드라이브 코스 전문가입니다. 자동차 동아리 회원들을 위한 드라이브 코스를 추천해주세요.`
-
-    const userMessage = `조건:
-- 출발지: ${departure}
-- 인원: ${people}
-- 소요 시간: ${duration}
-- 선호 분위기: ${vibes.length > 0 ? vibes.join(', ') : '특별한 선호 없음'}
-${season ? `- 계절: ${season}` : ''}
-${timeOfDay ? `- 시간대: ${timeOfDay}` : ''}
-
-다음 형식으로 답변해주세요:
-
-## 🗺 추천 코스명
-
-**코스 요약:** 한 줄 소개
-
-### 📍 코스 경로
-출발지 → 경유지1 → 경유지2 → 도착지 (각 구간 예상 소요 시간 포함)
-
-### 🚗 드라이브 포인트
-- 도로 특징 및 볼거리 2~3가지
-
-### 🍽 추천 스팟
-- 맛집 또는 카페 2~3곳 (지역명과 특징)
-
-### 💡 꿀팁
-- 주의사항 또는 참고사항 1~2가지
-
-한국어로 답변하고, 실제 존재하는 장소를 기반으로 구체적으로 추천해주세요.`
-
     try {
       const res = await fetch('/api/course', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ systemMessage, userMessage }),
+        headers: { 'Content-Type': 'application/json', ...(await authHeader()) },
+        // 프롬프트는 서버가 만든다 — 화면은 고른 조건만 보낸다
+        body: JSON.stringify({ departure, people, duration, vibes, season, timeOfDay }),
       })
       const data = await res.json()
       if (!res.ok || data.error) throw new Error(data.error || '추천 실패')
@@ -156,6 +130,7 @@ ${timeOfDay ? `- 시간대: ${timeOfDay}` : ''}
           <div className="logo">🗺 AI 드라이브 코스</div>
           <p className="logo-sub">맞춤 드라이브 코스 추천</p>
         </div>
+        {user && <button type="button" className="logout-btn" onClick={logout}>로그아웃</button>}
       </header>
 
       <section className="hero">
@@ -167,6 +142,9 @@ ${timeOfDay ? `- 시간대: ${timeOfDay}` : ''}
         </p>
       </section>
 
+      {user === undefined ? null : !user || !user.emailVerified ? (
+        <LoginGate user={user} title="로그인하고 코스 추천받기" />
+      ) : (
       <section className="form-section">
         {error && <div className="error-box">⚠️ {error}</div>}
 
@@ -175,6 +153,7 @@ ${timeOfDay ? `- 시간대: ${timeOfDay}` : ''}
           <input
             className="form-input"
             placeholder="예: 서울 강남, 수원 영통"
+            maxLength={40}
             value={departure}
             onChange={e => setDeparture(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSubmit()}
@@ -242,6 +221,7 @@ ${timeOfDay ? `- 시간대: ${timeOfDay}` : ''}
           {departure.trim() ? '🔍 코스 추천받기' : '출발지를 먼저 입력해주세요'}
         </button>
       </section>
+      )}
     </div>
   )
 
