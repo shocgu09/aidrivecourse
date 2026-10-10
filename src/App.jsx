@@ -58,7 +58,7 @@ export default function App() {
     setVibes(prev => prev.includes(v) ? prev.filter(x => x !== v) : [...prev, v])
 
   const handleSubmit = async () => {
-    if (!departure.trim()) { setError('출발지를 입력해주세요.'); return }
+    if (!departure.trim()) { setError('출발지를 입력해 주세요.'); return }
     setError(null); setStep('loading'); setLoadingStep(0)
 
     const timer = setInterval(() =>
@@ -72,7 +72,7 @@ export default function App() {
         body: JSON.stringify({ departure, people, duration, vibes, season, timeOfDay }),
       })
       const data = await res.json()
-      if (!res.ok || data.error) throw new Error(data.error || '추천 실패')
+      if (!res.ok || data.error) throw new Error(data.error || '코스를 추천하지 못했어요.')
       setResult(data.text)
       setStep('result')
     } catch (err) {
@@ -110,12 +110,12 @@ export default function App() {
           const a = document.createElement('a')
           a.href = url; a.download = 'drive-course.png'; a.click()
           URL.revokeObjectURL(url)
-          setShareMsg('이미지가 저장되었습니다!')
+          setShareMsg('이미지를 저장했어요!')
           setTimeout(() => setShareMsg(''), 2500)
         }
       }, 'image/png')
     } catch (e) {
-      setShareMsg('공유 중 오류가 발생했습니다.')
+      setShareMsg('공유 중 오류가 생겼어요.')
       setTimeout(() => setShareMsg(''), 2500)
     } finally {
       setSharing(false)
@@ -135,10 +135,10 @@ export default function App() {
 
       <section className="hero">
         <div className="badge">✨ AI 기반 추천</div>
-        <h1>나만의 <span className="accent">드라이브 코스</span>를<br />찾아드립니다</h1>
+        <h1>나만의 <span className="accent">드라이브 코스</span>를<br />찾아 드려요</h1>
         <p className="hero-desc">
           출발지와 원하는 분위기를 입력하면<br />
-          AI가 최적의 드라이브 코스를 추천해드립니다.
+          AI가 최적의 드라이브 코스를 추천해 드려요.
         </p>
       </section>
 
@@ -218,7 +218,7 @@ export default function App() {
           className={`btn-primary${!departure.trim() ? ' disabled' : ''}`}
           disabled={!departure.trim()}
           onClick={handleSubmit}>
-          {departure.trim() ? '🔍 코스 추천받기' : '출발지를 먼저 입력해주세요'}
+          {departure.trim() ? '🔍 코스 추천받기' : '출발지를 먼저 입력해 주세요'}
         </button>
       </section>
       )}
@@ -230,7 +230,7 @@ export default function App() {
     <div className="app loading-app">
       <div className="loading-wrap">
         <div className="loading-spinner" />
-        <h2 className="loading-title">코스 생성 중입니다</h2>
+        <h2 className="loading-title">코스를 만들고 있어요</h2>
         <div className="loading-steps">
           {LOADING_STEPS.map((s, i) => (
             <div key={i} className={`loading-step${i <= loadingStep ? ' active' : ''}${i < loadingStep ? ' done' : ''}`}>
@@ -239,7 +239,7 @@ export default function App() {
             </div>
           ))}
         </div>
-        <p className="loading-hint">약 10~20초 소요됩니다</p>
+        <p className="loading-hint">10~20초쯤 걸려요</p>
       </div>
     </div>
   )
